@@ -1,0 +1,20 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<title th:text=${title}></title>
+
+<body>
+    <p th:text=${msg}></p>
+    <p>Enter the product data</p>
+
+    <form th:action="@{/analyze}" th:object="${form}" method="post">
+        <div th:each="product, itemStat : *{products}" >
+            <p>Name: <input th:field="*{products[__${itemStat.index}__].name}"  /></p>
+            <p>Brand: <input th:field="*{products[__${itemStat.index}__].brand}"  /></p>
+            <p>Price: <input th:field="*{products[__${itemStat.index}__].price}"  /></p>
+            <p>Content: <input th:field="*{products[__${itemStat.index}__].content}"  /></p>
+            <hr>
+        </div>
+        <p><input type="submit" th:value="Save" /> <input type="reset" th:value="Reset" /></p>
+    </form>
+</body>
+
+</html>
