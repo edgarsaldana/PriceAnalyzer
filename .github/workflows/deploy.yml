@@ -1,7 +1,6 @@
 name: Build and Deploy
 
-on:
-  workflow_dispatch: {}
+on: [push]
 
 env:
   applicationfolder: .
@@ -12,7 +11,7 @@ env:
 jobs:
   build:
     name: Build and Package
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
@@ -41,7 +40,7 @@ jobs:
 
       - name: Upload Artifact to s3
         working-directory: ${{ env.applicationfolder }}/target
-        run: aws s3 cp *.jar s3://${{ env.S3BUCKET }}/
+        run: aws s3 cp *.jar s3://${{ env.S3BUCKET }}/latest/latest.jar
         
   deploy:
     needs: build
@@ -57,7 +56,13 @@ jobs:
         role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
         role-session-name: GitHub-Action-Role
         aws-region: ${{ env.AWS_REGION }}
-    - run: |
-        echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
-        commit_hash=`git rev-parse HEAD`
-        aws deploy create-deployment --application-name CodeDeployAppNameWithASG --deployment-group-name MY_DEPLOYMENT_GROUP --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v21
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: PriceAnalyzer
+        environment_name: Priceanalyzer-env
+        version_label: priceanalyzer-source-3
+        region: us-east-1
+        deployment_package: latest/latest.jar
