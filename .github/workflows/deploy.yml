@@ -36,7 +36,7 @@ jobs:
           #Name of artifact can be anything
           name: artifact
           #Relative path to jar file
-          path: target/eb-java-ci-cd-0.0.1-SNAPSHOT.jar
+          path: target/*.jar
   #Deploy's job
   deploy:
     #Depends on build's job
