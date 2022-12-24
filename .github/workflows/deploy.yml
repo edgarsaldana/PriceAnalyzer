@@ -40,7 +40,7 @@ jobs:
 
       - name: Upload Artifact to s3
         working-directory: ${{ env.applicationfolder }}/target
-        run: aws s3 cp *.jar s3://latest
+        run: aws s3 cp *.jar s3://elasticbeanstalk-us-east-1-363808062171/latest
         
   deploy:
     needs: build
