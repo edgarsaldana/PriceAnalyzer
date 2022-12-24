@@ -65,8 +65,7 @@ jobs:
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=cycorax12_eb-java-ci-cd -Dsonar.qualitygate.wait=true
+        run: mvn -B verify
   #Deploy's job
   deploy:
     #Depends on build's job
@@ -87,8 +86,8 @@ jobs:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} #This is referred from Github Secrets
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} #This is referred from Github Secrets
           use_existing_version_if_available: true
-          application_name: eb-java-github-ci-cd #Application name we created in Elastic BeanStalk
-          environment_name: Ebjavagithubcicd-env #Environment name we created in Elastic BeanStalk
+          application_name: PriceAnalyzer #Application name we created in Elastic BeanStalk
+          environment_name: Priceanalyzer-env #Environment name we created in Elastic BeanStalk
           version_label: ${{github.SHA}}
           region: us-east-1 #VERY IMPORTANT: AWS Region where initially Applciation was created in AWS EBS. We created in us-east-1 which is N-Virginia
           deployment_package: eb-java-ci-cd-0.0.1-SNAPSHOT.jar #download artifacts from previous job
